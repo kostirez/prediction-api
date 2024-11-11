@@ -1,19 +1,20 @@
 import { PredictionRequest, PredictionResult } from "./predictionTypes";
-import { predictFirst, predictSecond, predictThird } from "./predictionUtils";
+import { calculateMovingAverage, predictSecond, predictThird } from "./predictionUtils";
 
 let lastPrediction: PredictionResult | null = null;
 
-export async function predict(inputData: PredictionRequest): Promise<PredictionResult> {
+export function predict(inputData: PredictionRequest): PredictionResult {
   const mode = inputData.params.find(p => p.name==='mode');
   if (!mode) {
     throw new Error('mode is not defined');
   }
   if (mode.value === 0) {
-    lastPrediction = await predictFirst(inputData);
+    //moving average
+    lastPrediction = getMovingAverage(inputData);
   } else if (mode.value === 1) {
-    lastPrediction = await predictSecond(inputData);
+    lastPrediction = predictSecond(inputData);
   }else if (mode.value === 2) {
-    lastPrediction = await predictThird(inputData);
+    lastPrediction = predictThird(inputData);
   } else {
     throw new Error('Invalid mode selected');
   }
@@ -22,4 +23,13 @@ export async function predict(inputData: PredictionRequest): Promise<PredictionR
 
 export function getLastPrediction(): PredictionResult | null {
   return lastPrediction;
+}
+
+function getMovingAverage(inputData: PredictionRequest): PredictionResult {
+  const { data } = inputData;
+  const windowSize = inputData.params.find(p => p.name==='windowSize')?.value ?? 5;
+  if (!Number.isInteger(windowSize)) {
+    throw new Error('windowSize has to be integer');
+  }
+  return calculateMovingAverage(data, windowSize);
 }

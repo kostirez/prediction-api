@@ -1,9 +1,10 @@
+export type WeekData = { timestamp: string; value: number };
 
 export type PredictionRequest = {
   params: { name: string; value: number }[];
-  data: { timestamp: string; value: number }[];
+  data: WeekData[];
 };
 
 export type PredictionResult = {
-  predictions: { timestamp: string; value: number }[];
+  predictions: WeekData[];
 };
