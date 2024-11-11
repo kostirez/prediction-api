@@ -1,5 +1,5 @@
 import { PredictionRequest, PredictionResult } from "./predictionTypes";
-import { calculateLinearRegression, calculateMovingAverage, predictThird } from "./predictionUtils";
+import { calculateLinearRegression, calculateMovingAverage } from "./predictionUtils";
 
 let lastPrediction: PredictionResult | null = null;
 
@@ -14,8 +14,6 @@ export function predict(inputData: PredictionRequest): PredictionResult {
   } else if (mode.value === 1) {
     //linear regression
     lastPrediction = getLinearRegression(inputData);
-  }else if (mode.value === 2) {
-    lastPrediction = predictThird(inputData);
   } else {
     throw new Error('Invalid mode selected');
   }

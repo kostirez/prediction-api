@@ -1,4 +1,4 @@
-import { PredictionRequest, PredictionResult, WeekData } from "./predictionTypes";
+import { PredictionResult, WeekData } from "./predictionTypes";
 
 function nextWeek(timestamp: string): string {
   const nextTimestamp = new Date(timestamp);
@@ -56,11 +56,4 @@ export function calculateLinearRegression(data: WeekData[]): PredictionResult {
   }
 
   return result;
-}
-
-export function predictThird(inputData: PredictionRequest): PredictionResult {
-  const predictions: PredictionResult = {
-    predictions: []
-  }
-  return predictions;
 }
