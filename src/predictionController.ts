@@ -1,5 +1,5 @@
 import { PredictionRequest, PredictionResult } from "./predictionTypes";
-import { calculateMovingAverage, predictSecond, predictThird } from "./predictionUtils";
+import { calculateLinearRegression, calculateMovingAverage, predictThird } from "./predictionUtils";
 
 let lastPrediction: PredictionResult | null = null;
 
@@ -12,7 +12,8 @@ export function predict(inputData: PredictionRequest): PredictionResult {
     //moving average
     lastPrediction = getMovingAverage(inputData);
   } else if (mode.value === 1) {
-    lastPrediction = predictSecond(inputData);
+    //linear regression
+    lastPrediction = getLinearRegression(inputData);
   }else if (mode.value === 2) {
     lastPrediction = predictThird(inputData);
   } else {
@@ -32,4 +33,9 @@ function getMovingAverage(inputData: PredictionRequest): PredictionResult {
     throw new Error('windowSize has to be integer');
   }
   return calculateMovingAverage(data, windowSize);
+}
+
+function getLinearRegression(inputData: PredictionRequest): PredictionResult {
+  const { data } = inputData;
+  return calculateLinearRegression(data);
 }

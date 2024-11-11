@@ -22,11 +22,40 @@ export function calculateMovingAverage(data: WeekData[], windowSize: number): Pr
   return result;
 }
 
-export function predictSecond(inputData: PredictionRequest): PredictionResult {
-  const predictions: PredictionResult = {
+export function calculateLinearRegression(data: WeekData[]): PredictionResult {
+  const result: PredictionResult = {
     predictions: []
   }
-  return predictions;
+
+  const n = data.length;
+  // weeks
+  const x = data.map((_, i) => i+1);
+  // values
+  const y = data.map(d => d.value);
+
+  const sumX = x.reduce((a, b) => a + b, 0);
+  const sumY = y.reduce((a, b) => a + b, 0);
+  const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+  const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+
+  // coefficient  b1
+  const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+
+  // constant b0
+  const intercept = (sumY - slope * sumX) / n;
+
+
+  let lastWeek = data[data.length - 1].timestamp;
+
+  for (let i = 1; i <= 10; i++) {
+    const nextX = n + i;
+    // y = b1*x + b0
+    const nextValue = slope * nextX + intercept;
+    lastWeek = nextWeek(lastWeek);
+    result.predictions.push({timestamp: lastWeek, value: nextValue})
+  }
+
+  return result;
 }
 
 export function predictThird(inputData: PredictionRequest): PredictionResult {
